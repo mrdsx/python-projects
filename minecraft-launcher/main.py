@@ -81,6 +81,7 @@ class App(ctk.CTk):
         self.y = int((self.screen_height - self.HEIGHT) / 3.5)
         self.option_menu_width = 200
 
+        # SETUP WINDOW PARAMETERS
         self.title('Minecraft Launcher')
         self.geometry(f'{self.WIDTH}x{self.HEIGHT}+{self.x}+{self.y}')
         self.resizable(False, False)
@@ -88,6 +89,7 @@ class App(ctk.CTk):
         self.columnconfigure(1, weight=1)
         self.iconbitmap('icon.ico')
 
+        # SETUP IMAGES
         self.account_avatar = ctk.CTkImage(Image.open('images\\account_avatar.jpg'), size=(26, 26))
         self.background_image = ctk.CTkImage(Image.open('images\\bg_gradient.jpg'), size=(788, 535))
         self.down_arrow = ctk.CTkImage(light_image=Image.open('images\\down_arrow.png'),
@@ -1036,13 +1038,17 @@ class App(ctk.CTk):
         self.enter_username_entry.delete(0, len(self.enter_username_entry.get()))
         self.enter_username_entry.insert(0, self.username)
 
+        language_loader.data['username'] = ''
+        with open('launch_options.json', 'w') as f:
+            json.dump(language_loader.data, f, ensure_ascii=False, indent=4)
+
     def change_username(self):
         def validate_username(text):
             valid_chars = set(ascii_letters + punctuation + digits)
             for char in text:
                 if char not in valid_chars:
                     return False
-                    break
+            return True
 
         self.username = str(self.enter_username_entry.get())
         if len(self.username) > 16:
@@ -1055,9 +1061,7 @@ class App(ctk.CTk):
             self.account_label.configure(text=f'  {self.username}', font=ctk.CTkFont(size=20))
 
         if self.username.split():
-            if not validate_username(self.username):
-                pass
-            else:
+            if validate_username(self.username):
                 self.login_frame.grid_forget()
                 self.navigation_frame.grid(row=0, column=0, sticky='ns')
                 self.select_frame_by_name('home')

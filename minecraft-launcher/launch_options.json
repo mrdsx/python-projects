@@ -1,6 +1,6 @@
 {
-    "username": "",
-    "language": "en",
+    "username": "Name",
+    "language": "ru",
     "appearance_mode": "system",
     "include_snapshots": "true",
     "include_beta": "false",
@@ -9,6 +9,6 @@
     "width": "854",
     "height": "480",
     "choose_edit_mode": "simple",
-    "ram_count": 0,
+    "ram_count": 4,
     "jvm_args": ""
 }
