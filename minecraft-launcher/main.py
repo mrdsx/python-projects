@@ -690,6 +690,10 @@ class App(ctk.CTk):
             self.version_menu.configure(state='normal')
             self.home_frame_button_5.configure(state='normal')
 
+        launch_command = mll.command.get_minecraft_command(version=self.version_menu.get(),
+                                                                  minecraft_directory=minecraft_directory,
+                                                                  options=self.options)
+
         if self.version_menu.get() != f'{language_loader.lang_['no_versions']}':
             try:
                 self.play_button.configure(state='disabled')
@@ -702,9 +706,11 @@ class App(ctk.CTk):
                 elif self.change_launch_options_segmented_button.get() == f'{language_loader.lang_['advanced']}':
                     self.options['jvmArguments'] = self.jvm_args_entry.get().split(' ')
                 self.withdraw()
-                subprocess.call(mll.command.get_minecraft_command(version=self.version_menu.get(),
-                                                                  minecraft_directory=minecraft_directory,
-                                                                  options=self.options))
+                subprocess.call(
+                    launch_command,
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
                 self.deiconify()
             except mll.exceptions.VersionNotFound:
                 messagebox.showerror('Minecraft Launcher', f'{language_loader.lang_['version_not_found']}')
