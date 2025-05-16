@@ -710,6 +710,7 @@ class App(ctk.CTk):
                     launch_command,
                     stdout=subprocess.DEVNULL,
                     stderr=subprocess.DEVNULL,
+                    creationflags=subprocess.CREATE_NO_WINDOW
                 )
                 self.deiconify()
             except mll.exceptions.VersionNotFound:
