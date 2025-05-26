@@ -1,11 +1,9 @@
 import json
 import lang_dictionaries
 
-with open('launch_options.json') as f:
+with open('launch_options.json', 'r') as f:
     data = json.load(f)
-    if data['language'] == 'en':
-        lang_ = lang_dictionaries.en
-    elif data['language'] == 'ru':
+    if data['language'] == 'ru':
         lang_ = lang_dictionaries.ru
     elif data['language'] == 'zh':
         lang_ = lang_dictionaries.zh

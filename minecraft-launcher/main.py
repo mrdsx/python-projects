@@ -10,9 +10,9 @@ from tkinter import messagebox
 from threading import Thread
 from PIL import Image
 from uuid import uuid1
-from time import sleep, time
 import language_loader
 import ram_loader
+import get_uuid
 
 minecraft_directory = '.minecraft'
 ctk.set_appearance_mode(language_loader.data['appearance_mode'])
@@ -23,7 +23,6 @@ total_ram = psutil.virtual_memory().total
 unit = 'GB'
 max_ram = ram_loader.convert_bytes(total_ram, unit)
 
-
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -31,9 +30,10 @@ class App(ctk.CTk):
         global show_flag
 
         self.username = str(language_loader.data['username'])
+        self.player_uuid = get_uuid.get_uuid1()
         self.options = {
             'username': self.username,
-            'uuid': str(uuid1()),
+            'uuid': self.player_uuid,
             'token': ''
         }
 
@@ -685,16 +685,13 @@ class App(ctk.CTk):
         t1.start()
 
     def thread_1(self):
-        def return_configure():
-            self.play_button.configure(state='normal')
-            self.version_menu.configure(state='normal')
-            self.home_frame_button_5.configure(state='normal')
-
         launch_command = mll.command.get_minecraft_command(version=self.version_menu.get(),
                                                                   minecraft_directory=minecraft_directory,
                                                                   options=self.options)
 
-        if self.version_menu.get() != f'{language_loader.lang_['no_versions']}':
+        if self.version_menu.get() == f'{language_loader.lang_['no_versions']}':
+            messagebox.showinfo('Minecraft Launcher', f'{language_loader.lang_['cant_enter_the_game']}')
+        else:
             try:
                 self.play_button.configure(state='disabled')
                 self.version_menu.configure(state='disabled')
@@ -718,9 +715,9 @@ class App(ctk.CTk):
             except Exception as e:
                 messagebox.showerror('Minecraft Launcher', f'{language_loader.lang_['unknown_error']}\n{e}')
             finally:
-                return_configure()
-        else:
-            messagebox.showinfo('Minecraft Launcher', f'{language_loader.lang_['cant_enter_the_game']}')
+                self.play_button.configure(state='normal')
+                self.version_menu.configure(state='normal')
+                self.home_frame_button_5.configure(state='normal')
 
     def install_button_event(self):
         t2 = Thread(target=self.thread_2)
@@ -783,7 +780,6 @@ class App(ctk.CTk):
         self.update_progress_bar.grid_forget()
         self.update_label.grid_forget()
         self.percent_label.configure(text='')
-        sleep(2)
         self.update_label.grid(row=3, column=0, columnspan=2)
         self.update_label.configure(text='')
 
